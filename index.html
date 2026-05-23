@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Hazard Reporting Form</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #e8e8e8; padding-bottom: 40px; }
+
+  /* ── PAGE TITLE ── */
+  .page-title {
+    background: white;
+    color: #1a3c8f;
+    font-size: 19px;
+    font-weight: bold;
+    text-align: right;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* ── OUTER WRAPPER with side label ── */
+  .outer-block {
+    display: flex;
+    margin: 8px 6px;
+    border: 1.5px dashed #888;
+    background: white;
+  }
+
+  .side-tab {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-style: italic;
+    color: #444;
+    background: #f0f0f0;
+    border-right: 1px solid #bbb;
+    padding: 8px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .inner-block { flex: 1; overflow: hidden; }
+
+  /* ── GREEN HEADER ROW (compact, like original) ── */
+  .green-header {
+    display: flex;
+    align-items: center;
+    background: #2d7a2d;
+    padding: 4px 8px 4px 6px;
+    gap: 0;
+    border-bottom: 1px solid #1a5c1a;
+    min-height: 38px;
+  }
+
+  .green-badge {
+    background: #2d7a2d;
+    color: white;
+    font-size: 18px;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-right: 4px;
+  }
+
+  .green-it {
+    color: white;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 300;
+    flex-shrink: 0;
+    padding-right: 8px;
+  }
+
+  /* Illustrations area in header */
+  .header-illustrations {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  .header-illustrations svg {
+    flex-shrink: 0;
+  }
+
+  /* Question row directly after header */
+  .question-strip {
+    background: white;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #222;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* ── FIELD ROWS ── */
+  .field-row {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 8px;
+  }
+  .field-row:last-child { border-bottom: none; }
+
+  .field-label {
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 3px;
+  }
+
+  .two-col-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .two-col-fields .field-row:first-child { border-right: 1px solid #ddd; }
+
+  input[type=text], input[type=datetime-local], input[type=date], textarea, input[type=url] {
+    width: 100%;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    padding: 7px 8px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    color: #111;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus { border-color: #2d7a2d; box-shadow: 0 0 0 2px rgba(45,122,45,0.18); }
+  textarea { min-height: 72px; resize: vertical; }
+
+  /* ── MANAGER OUTER BLOCK ── */
+  .manager-block {
+    display: flex;
+    margin: 8px 6px;
+    border: 1.5px solid #888;
+    background: white;
+  }
+
+  .manager-side {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-style: italic;
+    color: #444;
+    background: #f0f0f0;
+    border-right: 1px solid #bbb;
+    padding: 8px 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    text-align: center;
+  }
+
+  .manager-inner { flex: 1; overflow: hidden; }
+
+  /* Sub-section titles */
+  .sub-title {
+    background: #e4e4e4;
+    padding: 5px 8px;
+    font-size: 11.5px;
+    font-weight: bold;
+    color: #111;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .sub-title span { text-decoration: underline; }
+  .sub-title .tick { font-weight: normal; font-style: italic; font-size: 10px; color: #666; text-decoration: none; }
+
+  /* Checkbox grid */
+  .cb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 4px 8px;
+    border-bottom: 1px solid #ddd;
+    gap: 1px 4px;
+  }
+
+  .cb-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 3px 0;
+    font-size: 10.5px;
+    color: #222;
+    line-height: 1.3;
+  }
+  .cb-item input[type=checkbox] {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    accent-color: #2d7a2d;
+    border: 1px solid #999;
+  }
+  .full-row { grid-column: 1 / -1; }
+
+  /* Root cause 3-col */
+  .rc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid #ddd;
+  }
+  .rc-col {
+    padding: 5px 6px;
+    border-right: 1px solid #ddd;
+    font-size: 10.5px;
+  }
+  .rc-col:last-child { border-right: none; }
+  .rc-col-title { font-size: 10.5px; font-weight: bold; text-decoration: underline; margin-bottom: 3px; color: #111; }
+  .rc-other { width: 100%; border: none; border-bottom: 1px solid #aaa; font-size: 10px; padding: 2px 0; outline: none; margin-top: 2px; }
+
+  /* Actions table */
+  .actions-tbl { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .actions-tbl th { background: #e4e4e4; padding: 4px 6px; text-align: left; border: 1px solid #ccc; font-size: 11px; }
+  .actions-tbl td { border: 1px solid #ccc; padding: 0; vertical-align: top; }
+  .actions-tbl td input, .actions-tbl td textarea {
+    width: 100%; border: none; padding: 5px 6px; font-size: 11.5px;
+    font-family: Arial, sans-serif; background: transparent; outline: none;
+    min-height: 32px; resize: none;
+  }
+
+  /* Bottom rows */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    border-top: 1px solid #ccc;
+    font-size: 11px;
+  }
+  .br-cell { padding: 4px 7px; border-right: 1px solid #ccc; }
+  .br-cell:last-child { border-right: none; }
+  .br-cell strong { display: block; font-size: 10.5px; font-weight: bold; margin-bottom: 2px; }
+  .br-cell input { border: none; border-bottom: 1px solid #aaa; font-size: 11px; padding: 2px 0; background: transparent; outline: none; width: 100%; }
+
+  .mgmt-action { padding: 5px 8px; font-size: 11px; font-weight: bold; border-top: 1px solid #ccc; }
+
+  /* Version line */
+  .version-line { font-size: 10px; color: #888; padding: 3px 8px 6px; display: flex; justify-content: space-between; }
+
+  /* Submit */
+  .submit-btn {
+    display: block; width: calc(100% - 12px); margin: 12px 6px 6px;
+    padding: 13px; background: #2d7a2d; color: white; border: none;
+    border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2); letter-spacing: 0.3px;
+  }
+  .submit-btn:active { background: #1b5e20; }
+
+  .spinner { display: none; text-align: center; padding: 6px; color: #2d7a2d; font-size: 12px; }
+
+  .toast {
+    display: none; position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: #333; color: white; padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; z-index: 999; white-space: nowrap; box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  }
+  .toast.show { display: block; }
+  .toast.success { background: #2d7a2d; }
+  .toast.error { background: #b71c1c; }
+
+  .config-box {
+    background: #fff8e1; border: 1px solid #f9a825; border-radius: 4px;
+    padding: 8px 10px; margin: 6px; font-size: 11.5px; color: #5d4037;
+  }
+  .config-box strong { display: block; margin-bottom: 3px; font-size: 12px; }
+  .config-box input { margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page-title">Hazard Reporting Form</div>
+
+<div class="config-box">
+  <strong>⚙️ Setup: Enter your Google Apps Script Web App URL</strong>
+  Paste the URL from your deployed Google Apps Script to enable submission to Google Sheets.
+  <input type="url" id="scriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION: This bit if you find something
+══════════════════════════════════════ -->
+<div class="outer-block">
+  <div class="side-tab">This bit if you find something</div>
+  <div class="inner-block">
+
+    <!-- SEE it -->
+    <div class="green-header">
+      <span class="green-badge">SEE</span><span class="green-it">&nbsp;it</span>
+      <div class="header-illustrations">
+        <!-- Wheel/tyre hazard -->
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="#555" stroke="#333" stroke-width="1.5"/><circle cx="14" cy="14" r="5" fill="#222"/><line x1="14" y1="3" x2="14" y2="25" stroke="#777" stroke-width="1"/><line x1="3" y1="14" x2="25" y2="14" stroke="#777" stroke-width="1"/></svg>
+        <!-- Spill -->
+        <svg width="30" height="26" viewBox="0 0 30 26"><ellipse cx="15" cy="20" rx="13" ry="5" fill="#4fc3f7" opacity="0.7"/><path d="M10 15 Q15 5 20 15" fill="#29b6f6" stroke="#0288d1" stroke-width="1"/></svg>
+        <!-- Leaking pipe -->
+        <svg width="30" height="26" viewBox="0 0 30 26"><rect x="4" y="10" width="22" height="7" rx="3" fill="#90a4ae" stroke="#607d8b" stroke-width="1"/><path d="M14 17 Q12 22 15 25 Q18 22 16 17" fill="#4fc3f7" opacity="0.8"/></svg>
+        <!-- Person figure -->
+        <svg width="22" height="30" viewBox="0 0 22 30"><circle cx="11" cy="5" r="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/><line x1="11" y1="9" x2="11" y2="20" stroke="#999" stroke-width="2"/><line x1="11" y1="13" x2="5" y2="18" stroke="#999" stroke-width="1.5"/><line x1="11" y1="13" x2="17" y2="18" stroke="#999" stroke-width="1.5"/><line x1="11" y1="20" x2="7" y2="29" stroke="#999" stroke-width="1.5"/><line x1="11" y1="20" x2="15" y2="29" stroke="#999" stroke-width="1.5"/></svg>
+        <!-- Boxes stack -->
+        <svg width="28" height="28" viewBox="0 0 28 28"><rect x="4" y="16" width="20" height="10" rx="1" fill="#8d6e63" stroke="#5d4037" stroke-width="1"/><rect x="6" y="9" width="16" height="8" rx="1" fill="#a1887f" stroke="#5d4037" stroke-width="1"/><rect x="8" y="4" width="12" height="6" rx="1" fill="#bcaaa4" stroke="#5d4037" stroke-width="1"/></svg>
+      </div>
+    </div>
+
+    <div class="two-col-fields">
+      <div class="field-row">
+        <div class="field-label">Spotted by (Can be anonymous)</div>
+        <input type="text" id="spottedBy" placeholder="Name or leave blank">
+      </div>
+      <div class="field-row">
+        <div class="field-label">Date / Time</div>
+        <input type="datetime-local" id="dateTime">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">Where did you SEE it?</div>
+      <input type="text" id="whereSeenIt" placeholder="Location / area">
+    </div>
+    <div class="field-row">
+      <div class="field-label">What did you SEE?</div>
+      <textarea id="whatSeen" placeholder="Describe the hazard you observed…"></textarea>
+    </div>
+
+    <!-- SORT it -->
+    <div class="green-header">
+      <span class="green-badge">SORT</span><span class="green-it">&nbsp;it</span>
+      <div class="header-illustrations">
+        <!-- Worker with hard hat -->
+        <svg width="22" height="32" viewBox="0 0 22 32"><path d="M4 10 Q11 3 18 10" fill="#f9a825" stroke="#e65100" stroke-width="1.5"/><rect x="3" y="10" width="16" height="3" rx="1" fill="#e65100"/><circle cx="11" cy="7" r="3" fill="#ffe0b2"/><line x1="11" y1="13" x2="11" y2="24" stroke="#5c6bc0" stroke-width="2"/><line x1="11" y1="17" x2="5" y2="22" stroke="#5c6bc0" stroke-width="1.5"/><line x1="11" y1="17" x2="17" y2="22" stroke="#5c6bc0" stroke-width="1.5"/><line x1="11" y1="24" x2="7" y2="32" stroke="#5c6bc0" stroke-width="1.5"/><line x1="11" y1="24" x2="15" y2="32" stroke="#5c6bc0" stroke-width="1.5"/></svg>
+        <!-- Caution cone -->
+        <svg width="24" height="30" viewBox="0 0 24 30"><polygon points="12,2 22,28 2,28" fill="#f9a825" stroke="#e65100" stroke-width="1.5"/><rect x="2" y="22" width="20" height="3" fill="white" opacity="0.8"/><rect x="2" y="15" width="20" height="2.5" fill="white" opacity="0.8"/><rect x="1" y="27" width="22" height="3" rx="1" fill="#bbb"/></svg>
+        <!-- Mop / cleaning -->
+        <svg width="22" height="32" viewBox="0 0 22 32"><rect x="10" y="0" width="3" height="22" rx="1" fill="#795548"/><path d="M4 22 Q11 18 18 22 L16 30 Q11 28 6 30 Z" fill="#b0bec5" stroke="#78909c" stroke-width="1"/></svg>
+        <!-- Crouching person -->
+        <svg width="24" height="28" viewBox="0 0 24 28"><circle cx="12" cy="4" r="3.5" fill="#e0e0e0" stroke="#999" stroke-width="1"/><path d="M12 8 Q8 14 6 20 Q10 22 14 20 Q16 14 12 8Z" fill="#9e9e9e"/><line x1="12" y1="12" x2="6" y2="16" stroke="#999" stroke-width="1.5"/><line x1="12" y1="12" x2="18" y2="16" stroke="#999" stroke-width="1.5"/><line x1="10" y1="20" x2="8" y2="27" stroke="#999" stroke-width="1.5"/><line x1="14" y1="20" x2="16" y2="27" stroke="#999" stroke-width="1.5"/></svg>
+      </div>
+    </div>
+    <div class="question-strip">What was done straight away to SORT?</div>
+    <div class="field-row">
+      <textarea id="sortAction" placeholder="Immediate actions taken…"></textarea>
+    </div>
+
+    <!-- REPORT it -->
+    <div class="green-header">
+      <span class="green-badge">REPORT</span><span class="green-it">&nbsp;it</span>
+      <div class="header-illustrations">
+        <!-- Megaphone person -->
+        <svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="6" r="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/><line x1="15" y1="10" x2="15" y2="20" stroke="#999" stroke-width="2"/><line x1="15" y1="14" x2="9" y2="20" stroke="#999" stroke-width="1.5"/><line x1="15" y1="14" x2="21" y2="20" stroke="#999" stroke-width="1.5"/><line x1="15" y1="20" x2="11" y2="29" stroke="#999" stroke-width="1.5"/><line x1="15" y1="20" x2="19" y2="29" stroke="#999" stroke-width="1.5"/><path d="M3 12 Q1 14 3 16 L9 14Z" fill="#ef5350"/></svg>
+        <!-- Mobile phone -->
+        <svg width="18" height="28" viewBox="0 0 18 28"><rect x="2" y="1" width="14" height="26" rx="3" fill="#455a64" stroke="#263238" stroke-width="1"/><rect x="4" y="4" width="10" height="16" rx="1" fill="#80cbc4"/><circle cx="9" cy="23" r="1.5" fill="#90a4ae"/></svg>
+        <!-- Listening person -->
+        <svg width="22" height="30" viewBox="0 0 22 30"><circle cx="11" cy="5" r="4" fill="#e0e0e0" stroke="#999" stroke-width="1"/><line x1="11" y1="9" x2="11" y2="20" stroke="#999" stroke-width="2"/><line x1="11" y1="13" x2="5" y2="18" stroke="#999" stroke-width="1.5"/><line x1="11" y1="13" x2="17" y2="18" stroke="#999" stroke-width="1.5"/><line x1="11" y1="20" x2="7" y2="29" stroke="#999" stroke-width="1.5"/><line x1="11" y1="20" x2="15" y2="29" stroke="#999" stroke-width="1.5"/></svg>
+        <!-- Thumbs up person -->
+        <svg width="22" height="30" viewBox="0 0 22 30"><circle cx="11" cy="5" r="4" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1"/><line x1="11" y1="9" x2="11" y2="20" stroke="#ffb74d" stroke-width="2"/><path d="M11 13 L18 11 Q20 13 18 15 L11 17" fill="#ffcc02" stroke="#e6a800" stroke-width="1"/><line x1="11" y1="20" x2="7" y2="29" stroke="#ffb74d" stroke-width="1.5"/><line x1="11" y1="20" x2="15" y2="29" stroke="#ffb74d" stroke-width="1.5"/></svg>
+      </div>
+    </div>
+    <div class="question-strip">Who did you REPORT it to?</div>
+    <div class="field-row">
+      <input type="text" id="reportedTo" placeholder="Name / role">
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION: This bit for line managers
+══════════════════════════════════════ -->
+<div class="manager-block">
+  <div class="manager-side">This bit for line managers</div>
+  <div class="manager-inner">
+
+    <!-- POTENTIAL IMPLICATION -->
+    <div class="sub-title">
+      <span>POTENTIAL IMPLICATION involving</span>
+      <em class="tick">[tick to suit]</em>
+    </div>
+    <div class="cb-grid">
+      <label class="cb-item"><input type="checkbox" name="pi" value="HANDLING/LIFTING/CARRYING/MANOEUVRING"> HANDLING/LIFTING/CARRYING/MANOEUVRING</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="SLIPPING or TRIPPING on same level"> SLIPPING or TRIPPING on the same level</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="HORSEPLAY"> HORSEPLAY</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="ENTERING/EXITING vehicle/MHE/mobile plant"> ENTERING/EXITING vehicle/MHE/mobile plant</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="FALLING from height"> FALLING from height</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="Being HIT BY moving/falling object"> Being HIT BY moving/falling object</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="object Being HIT BY moving vehicle/MHE/mobile plant"> object Being HIT BY moving vehicle/MHE/mobile plant</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="HITTING something fixed or stationary"> HITTING something fixed or stationary</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="POLLUTION"> POLLUTION</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="Exposure to HARMFUL SUBSTANCE/FOREIGN OBJECT"> Exposure to HARMFUL SUBSTANCE/FOREIGN OBJECT</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="Being TRAPPED BY something collapsing"> Being TRAPPED BY something collapsing</label>
+      <label class="cb-item"><input type="checkbox" name="pi" value="Contact with MOVING MACHINERY"> Contact with MOVING MACHINERY</label>
+      <label class="cb-item full-row"><input type="checkbox" name="pi" value="OTHER"> OTHER: <input type="text" id="piOther" placeholder="specify…" style="border:none;border-bottom:1px solid #aaa;font-size:10.5px;outline:none;width:60%;margin-left:4px;padding:0 2px;"></label>
+    </div>
+
+    <!-- ROOT CAUSE -->
+    <div class="sub-title">
+      <span>ROOT CAUSE — Why <u>did it arise?</u></span>
+      <em class="tick">[tick to suit]</em>
+    </div>
+    <div class="rc-grid">
+      <div class="rc-col">
+        <div class="rc-col-title">Job Factors:</div>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Design/Risk Assessment"> Design/Risk Assessment</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Management Systems and Work Planning"> Management Systems and Work Planning</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="SSoW or Policies, Standards, Procedures"> SSoW or Policies, Standards, Procedures</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Managing People (competence, resourcing)"> Managing People (competence, resourcing)</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Contractor Selection and Management"> Contractor Selection and Management</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Procurement, Material Handling and Control"> Procurement, Material Handling and Control</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Plant, Tools, and Equipment"> Plant, Tools, and Equipment</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Communication"> Communication</label>
+      </div>
+      <div class="rc-col">
+        <div class="rc-col-title">Unsafe Acts:</div>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Following Procedures"> Following Procedures</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Use of Tools or Equipment"> Use of Tools or Equipment</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Safety Risks/Controls"> Safety Risks/Controls</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Inattention/Lack of Awareness"> Inattention/Lack of Awareness</label>
+        <div class="rc-col-title" style="margin-top:7px;">Unsafe Conditions:</div>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Protective Systems"> Protective Systems</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Tools, Plant/Equipment/Vehicles"> Tools, Plant/Equipment/Vehicles</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Work Exposures"> Work Exposures</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Workplace Environment/Layout"> Workplace Environment/Layout</label>
+      </div>
+      <div class="rc-col">
+        <div class="rc-col-title">Personal Factors:</div>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Behavior"> Behavior</label>
+        <label class="cb-item"><input type="checkbox" name="rc" value="Skill Level"> Skill Level</label>
+        <div style="margin-top:10px;">
+          <label class="cb-item"><input type="checkbox" name="rc" value="OTHER"> OTHER:</label>
+          <input class="rc-other" type="text" id="rcOther" placeholder="Specify…">
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="sub-title" style="display:block;"><span>ACTIONS to prevent recurrence</span></div>
+    <table class="actions-tbl">
+      <thead>
+        <tr>
+          <th style="width:52%;">Action</th>
+          <th style="width:26%;">Who:</th>
+          <th style="width:22%;">When by:</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><textarea id="action1" rows="2" placeholder="1."></textarea></td>
+          <td><input type="text" id="a1who" placeholder="Name"></td>
+          <td><input type="date" id="a1when"></td>
+        </tr>
+        <tr>
+          <td><textarea id="action2" rows="2" placeholder="2."></textarea></td>
+          <td><input type="text" id="a2who" placeholder="Name"></td>
+          <td><input type="date" id="a2when"></td>
+        </tr>
+        <tr>
+          <td><textarea id="action3" rows="2" placeholder="3."></textarea></td>
+          <td><input type="text" id="a3who" placeholder="Name"></td>
+          <td><input type="date" id="a3when"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="bottom-row">
+      <div class="br-cell"><strong>ACTIONS COMPLETED</strong><input type="date" id="acDate"></div>
+      <div class="br-cell"><strong>Date</strong><input type="date" id="acDate2"></div>
+      <div class="br-cell"><strong>Signed:</strong><input type="text" id="acSigned" placeholder="Name"></div>
+    </div>
+    <div class="bottom-row">
+      <div class="br-cell"><strong>FEEDBACK TO INDIVIDUAL</strong></div>
+      <div class="br-cell"><strong>Date</strong><input type="date" id="fbDate"></div>
+      <div class="br-cell"><strong>Signed:</strong><input type="text" id="fbSigned" placeholder="Name"></div>
+    </div>
+
+    <div class="mgmt-action">Management Action: Report on Entropy</div>
+
+  </div>
+</div>
+
+<div class="version-line">
+  <span>Version: 1 &nbsp;&nbsp; Date: 23.06.2025</span>
+  <span>Review Date: 22.06.2028</span>
+</div>
+
+<button class="submit-btn" onclick="submitForm()">📤 Submit to Google Sheets</button>
+<div class="spinner" id="spinner">Submitting… please wait</div>
+<div class="toast" id="toast"></div>
+
+<script>
+function getChecked(name){
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c=>c.value).join(', ');
+}
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast',4000);
+}
+async function submitForm(){
+  const url=document.getElementById('scriptUrl').value.trim();
+  if(!url){showToast('⚠️ Please enter your Google Apps Script URL above','error');return;}
+  const data={
+    spottedBy:      document.getElementById('spottedBy').value,
+    dateTime:       document.getElementById('dateTime').value,
+    whereSeen:      document.getElementById('whereSeenIt').value,
+    whatSeen:       document.getElementById('whatSeen').value,
+    sortAction:     document.getElementById('sortAction').value,
+    reportedTo:     document.getElementById('reportedTo').value,
+    potentialImplication: getChecked('pi'),
+    piOther:        document.getElementById('piOther').value,
+    rootCause:      getChecked('rc'),
+    rcOther:        document.getElementById('rcOther').value,
+    action1:        document.getElementById('action1').value,
+    action1who:     document.getElementById('a1who').value,
+    action1when:    document.getElementById('a1when').value,
+    action2:        document.getElementById('action2').value,
+    action2who:     document.getElementById('a2who').value,
+    action2when:    document.getElementById('a2when').value,
+    action3:        document.getElementById('action3').value,
+    action3who:     document.getElementById('a3who').value,
+    action3when:    document.getElementById('a3when').value,
+    actionsCompletedDate: document.getElementById('acDate').value,
+    actionsCompletedSigned: document.getElementById('acSigned').value,
+    feedbackDate:   document.getElementById('fbDate').value,
+    feedbackSigned: document.getElementById('fbSigned').value,
+  };
+  document.getElementById('spinner').style.display='block';
+  document.querySelector('.submit-btn').disabled=true;
+  try{
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    showToast('✅ Submitted successfully!','success');
+  }catch(e){
+    showToast('❌ Submission failed — check your Script URL','error');
+  }finally{
+    document.getElementById('spinner').style.display='none';
+    document.querySelector('.submit-btn').disabled=false;
+  }
+}
+// Default datetime to now
+const n=new Date(); n.setMinutes(n.getMinutes()-n.getTimezoneOffset());
+document.getElementById('dateTime').value=n.toISOString().slice(0,16);
+</script>
+</body>
+</html>
